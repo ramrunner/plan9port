@@ -22,6 +22,7 @@ enum
 /*static int altcode = 0x40; */
 /*static int pgupcode = 0x63; */
 /*static int pgdowncode = 0x69; */
+static int curvirtual = 0;
 
 static void alttab(int shift);
 
@@ -30,10 +31,12 @@ keysetup(void)
 {
 	int i;
 	int tabcode = XKeysymToKeycode(dpy, XK_Tab);
+	int wincode = XKeysymToKeycode(dpy, XK_Super_L);
 
 	for(i=0; i<num_screens; i++){
 		XGrabKey(dpy, tabcode, Mod1Mask, screens[i].root, 0, GrabModeSync, GrabModeAsync);
 		XGrabKey(dpy, tabcode, Mod1Mask|ShiftMask, screens[i].root, 0, GrabModeSync, GrabModeAsync);
+		XGrabKey(dpy, wincode, Mod1Mask, screens[i].root, 0, GrabModeSync, GrabModeAsync);
 	/*	XGrabKey(dpy, pgupcode, Mod1Mask, screens[i].root, 0, GrabModeSync, GrabModeAsync); */
 	/*	XGrabKey(dpy, pgdowncode, Mod1Mask, screens[i].root, 0, GrabModeSync, GrabModeAsync); */
 	/*	XGrabKey(dpy, altcode, 0, screens[i].root, 0, GrabModeSync, GrabModeAsync); */
@@ -47,8 +50,14 @@ keypress(XKeyEvent *e)
 	 * process key press here
 	 */
 	int tabcode = XKeysymToKeycode(dpy, XK_Tab);
+	int wincode = XKeysymToKeycode(dpy, XK_Super_L);
 	if(e->keycode == tabcode && (e->state&Mod1Mask) == (1<<3))
 		alttab(e->state&ShiftMask);
+	else if(e->keycode == wincode && (e->state&Mod1Mask) == (1<<3)) {
+		if(curvirtual++ >= numvirtuals)
+			curvirtual = 0;
+		button2(curvirtual);
+	}
 	XAllowEvents(dpy, SyncKeyboard, e->time);
 }
 

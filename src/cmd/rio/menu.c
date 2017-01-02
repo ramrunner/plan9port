@@ -4,7 +4,6 @@
 
 /* Copyright (c) 1994-1996 David Hogan, see README for licence details */
 #define _SVID_SOURCE 1	/* putenv in glibc */
-#define _DEFAULT_SOURCE 1
 #include <stdio.h>
 #include <signal.h>
 #include <unistd.h>
@@ -211,7 +210,7 @@ spawn(ScreenInfo *s)
 				perror(" failed");
 			}
 			execlp("9term", "9term", scrolling ? "-ws" : "-w", (char*)0);
-			execlp("xterm", "xterm", "-ut", (char*)0);
+			execlp("xterm", "xterm", "-fn", "-xos4-terminus-medium-r-normal--18-180-72-72-c-100-iso8859-1", "+sb",  "-fg", "green", "-bg", "black", "/bin/sh", (char*)0);
 			perror("rio: exec 9term/xterm failed");
 			exit(1);
 		}
